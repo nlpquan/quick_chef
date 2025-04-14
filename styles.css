@@ -1,0 +1,109 @@
+body {
+    background-color: #f9f9f9;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .recipe-card {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    border: none;
+    cursor: pointer;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  .recipe-card:hover {
+    transform: scale(1.02);
+  }
+  .recipe-img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    will-change: transform;
+  }
+  .recipe-overlay {
+    position: absolute;
+    bottom: 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    color: white;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    font-weight: 600;
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px black;
+    z-index: 1;
+    
+    /* These help stabilize text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: none;
+  }
+  
+  .recipe-meta {
+    font-size: 0.85rem;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 1rem 0.6rem 1rem;
+    background-color: white;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .recipe-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .detail-panel {
+    position: fixed;
+    top: 0;
+    right: -53%;
+    width: 53%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    transition: right 0.3s ease-in-out;
+    overflow-y: auto;
+    z-index: 1051;
+    padding: 2.5rem 4.25rem !important;
+  }
+  .detail-panel img {
+    width: 100%;              /* Lock image width to panel width */
+    height: 400px;            /* Make the image taller */
+    object-fit: cover;        /* Crop to fit the box nicely */
+    border-radius: 20px !important;      /* Slightly rounded corners */
+    display: block;           /* No inline spacing */
+    margin: 0 auto;           /* Center if smaller than full width */
+  }  
+  .detail-panel.show {
+    right: 0;
+  }
+  .detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3);
+    z-index: 1050;
+    display: none;
+  }
+  .detail-overlay.show {
+    display: block;
+  }
+
+  #search-suggestions li {
+    cursor: pointer;
+  }
+  #search-suggestions li:hover {
+    background-color: #f8f9fa;
+  }
+
+  nav.sticky-top {
+    transition: box-shadow 0.2s ease-in-out;
+    border-bottom: 1px solid #eee;
+  }
+  
+  
