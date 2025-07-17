@@ -1,109 +1,210 @@
 body {
-    background-color: #f9f9f9;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  .recipe-card {
-    position: relative;
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-    border: none;
-    cursor: pointer;
-    will-change: transform;
-    backface-visibility: hidden;
-  }
-  .recipe-card:hover {
-    transform: scale(1.02);
-  }
-  .recipe-img {
-    height: 200px;
-    object-fit: cover;
-    width: 100%;
-    transition: transform 0.2s ease, filter 0.2s ease;
-    will-change: transform;
-  }
-  .recipe-overlay {
-    position: absolute;
-    bottom: 40px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
-    color: white;
-    padding: 0.75rem 1rem;
-    width: 100%;
-    font-weight: 600;
-    font-size: 1rem;
-    text-shadow: 1px 1px 2px black;
-    z-index: 1;
-    
-    /* These help stabilize text rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transition: none;
-  }
+  background-color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+}
+.recipe-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  border: none;
+  cursor: pointer;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.recipe-card:hover {
+  transform: scale(1.02);
+}
+.recipe-img {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  will-change: transform;
+}
+.recipe-overlay {
+  position: absolute;
+  bottom: 40px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  color: white;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  font-weight: 600;
+  font-size: 1rem;
+  text-shadow: 1px 1px 2px black;
+  z-index: 1;
   
-  .recipe-meta {
-    font-size: 0.85rem;
-    color: #666;
-    display: flex;
-    justify-content: space-between;
-    padding: 0.6rem 1rem 0.6rem 1rem;
-    background-color: white;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .recipe-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-  .detail-panel {
-    position: fixed;
-    top: 0;
-    right: -53%;
-    width: 53%;
-    height: 100%;
-    background-color: #fff;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-    transition: right 0.3s ease-in-out;
-    overflow-y: auto;
-    z-index: 1051;
-    padding: 2.5rem 4.25rem !important;
-  }
-  .detail-panel img {
-    width: 100%;              /* Lock image width to panel width */
-    height: 400px;            /* Make the image taller */
-    object-fit: cover;        /* Crop to fit the box nicely */
-    border-radius: 20px !important;      /* Slightly rounded corners */
-    display: block;           /* No inline spacing */
-    margin: 0 auto;           /* Center if smaller than full width */
-  }  
-  .detail-panel.show {
-    right: 0;
-  }
-  .detail-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.3);
-    z-index: 1050;
-    display: none;
-  }
-  .detail-overlay.show {
-    display: block;
-  }
+  /* These help stabilize text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: none;
+}
 
-  #search-suggestions li {
-    cursor: pointer;
-  }
-  #search-suggestions li:hover {
-    background-color: #f8f9fa;
-  }
+.recipe-meta {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 1rem 0.6rem 1rem;
+  background-color: white;
+  position: relative;
+  z-index: 2;
+}
 
-  nav.sticky-top {
-    transition: box-shadow 0.2s ease-in-out;
-    border-bottom: 1px solid #eee;
-  }
-  
-  
+.recipe-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.detail-panel {
+  position: fixed;
+  top: 0;
+  right: -53%;
+  width: 53%;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
+  z-index: 1051;
+  padding: 2.5rem 4.25rem !important;
+}
+.detail-panel img {
+  width: 100%;              /* Lock image width to panel width */
+  height: 400px;            /* Make the image taller */
+  object-fit: cover;        /* Crop to fit the box nicely */
+  border-radius: 20px !important;      /* Slightly rounded corners */
+  display: block;           /* No inline spacing */
+  margin: 0 auto;           /* Center if smaller than full width */
+}  
+.detail-panel.show {
+  right: 0;
+}
+.detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  z-index: 1050;
+  display: none;
+}
+.detail-overlay.show {
+  display: block;
+}
+
+#search-suggestions li {
+  cursor: pointer;
+}
+#search-suggestions li:hover {
+  background-color: #f8f9fa;
+}
+
+nav.sticky-top {
+  transition: box-shadow 0.2s ease-in-out;
+  border-bottom: 1px solid #eee;
+}
+
+
+#pet-widget {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 150px;
+  height: 150px;
+  background: #fff8e7;
+  border: 4px solid #ffcc70;
+  border-radius: 20px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 10px;
+  z-index: 1000;
+  cursor: pointer; /* Clickable */
+  transition: transform 0.2s ease;
+}
+
+#pet-widget:hover {
+  transform: scale(1.05);
+}
+
+#pet-img {
+  width: 100px;
+  height: 100px;
+  image-rendering: pixelated;
+}
+
+#pet-status {
+  font-size: 0.9rem;
+  margin-top: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+#pet-panel img {
+  width: 150px;
+  height: 150px;
+  image-rendering: pixelated;
+}
+
+#close-pet-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+
+
+
+#sidebar-tabs {
+  right: 0;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 1045;
+}
+
+#sidebar-tabs button {
+  border-radius: 8px 0 0 8px;
+  padding: 8px 12px;
+  min-width: 80px;
+  text-align: left;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  transition: background-color 0.2s ease;
+}
+
+#sidebar-tabs button:hover {
+  background-color: #f1f1f1;
+}
+
+#mission-panel {
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 1050;
+}
+
+#mission-panel.show {
+  transform: translateX(0);
+}
+
+#mission-overlay {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#mission-overlay.show {
+  display: block;
+}
+
+
+
+
+

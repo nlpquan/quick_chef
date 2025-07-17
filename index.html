@@ -10,6 +10,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Loading Screen -->
+<div id="loading-screen" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <img src="pet_loading.gif" alt="Loading..." style="width: 120px;">
+</div>
+
   <nav class="bg-white sticky-top shadow-sm py-3 px-3 z-3">
     <div class="container d-flex align-items-center justify-content-between position-relative">
       
@@ -37,6 +51,36 @@
       </div>
     </div>
   </nav>
+
+  <div class="container text-center my-4">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <label class="me-2"><strong>How are you feeling?</strong></label>
+      <select id="userMood" class="form-select d-inline-block w-auto">
+        <option value="neutral">Neutral</option>
+        <option value="happy">Happy 😊</option>
+        <option value="sad">Sad 😢</option>
+        <option value="tired">Tired 😴</option>
+        <option value="adventurous">Adventurous 🌶️</option>
+        <option value="lazy">Lazy 🍞</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-3">
+    <div class="col-auto">
+      <div class="btn-group" role="group" id="my-recipes-tabs">
+        <button type="button" class="btn btn-outline-primary" data-filter="all">All</button>
+        <button type="button" class="btn btn-outline-success" data-filter="completed">Completed</button>
+        <button type="button" class="btn btn-outline-danger" data-filter="favorite">Favorite</button>
+        <button type="button" class="btn btn-outline-dark" data-filter="both">Completed + Favorite</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
   
   <div class="container py-4">
     <!-- Recipes Grid -->
@@ -55,6 +99,61 @@
     <i class="bi bi-arrow-up"></i>
   </button>
 
-  <script src="script.js"></script>
+ <!-- Pet Widget (Always Visible) -->
+<div id="pet-widget">
+  <img id="pet-img" src="pet_happy.gif" alt="Your Pet">
+  <div id="pet-status">
+    <span id="pet-name">Chefie</span> 🍳<br>
+    <span id="pet-mood">Happy</span>
+  </div>
+</div>
+
+<!-- Bootstrap Modal for Pet -->
+<div class="modal fade" id="petModal" tabindex="-1" aria-labelledby="petModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="petModalLabel">🐾 Meet Your Pet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="pet-panel-img" src="pet_happy.gif" alt="Pet" style="width: 150px; height: 150px; image-rendering: pixelated;" class="mb-3">
+        <h4 id="pet-panel-name">Chefie</h4>
+        <p><strong>Mood:</strong> <span id="pet-panel-mood">Happy</span></p>
+        <p><strong>Level:</strong> <span id="pet-panel-level">3</span></p>
+        <p><strong>Experience:</strong> <span id="pet-panel-xp">120 XP</span></p>
+
+        <!-- 🟩 XP Progress Bar -->
+        <div class="progress my-2">
+  <div id="pet-xp-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Right-side Tab Dock -->
+<div id="sidebar-tabs" class="position-fixed end-0 top-50 translate-middle-y z-3">
+  <button class="btn btn-outline-dark mb-2" data-tab="daily-mission">🔥 Daily</button>
+  <button class="btn btn-outline-dark" data-tab="weekly-mission">📆 Weekly</button>
+</div>
+
+<!-- Overlay -->
+<div id="mission-overlay" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" style="display: none; z-index: 1040;"></div>
+
+<!-- Slide-in Panel -->
+<div id="mission-panel" class="position-fixed top-0 end-0 bg-white shadow p-4" style="width: 300px; height: 100vh; transform: translateX(100%); transition: transform 0.3s ease; z-index: 1045;">
+  <button id="close-mission-panel" class="btn-close float-end"></button>
+  <div id="mission-content" class="mt-4">
+    <!-- Dynamic content goes here -->
+  </div>
+</div>
+
+
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
