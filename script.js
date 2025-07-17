@@ -6,6 +6,40 @@ let allRecipes = [];
 const searchInput = document.getElementById("searchInput");
 const suggestionsList = document.getElementById("search-suggestions");
 
+
+let weatherMood = "neutral"; // default
+
+function fetchWeatherMood() {
+  if (!navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude, longitude } = pos.coords;
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`)
+      .then(res => res.json())
+      .then(data => {
+        const temp = data.current_weather.temperature;
+        const code = data.current_weather.weathercode;
+
+        // Simple mapping based on temperature + weather code
+        if (code >= 51 && code <= 99) {
+          weatherMood = "rainy";
+        } else if (temp >= 28) {
+          weatherMood = "hot";
+        } else if (temp <= 10) {
+          weatherMood = "cold";
+        } else {
+          weatherMood = "neutral";
+        }
+
+        console.log("🌦️ Weather Mood:", weatherMood);
+
+        // After weather is known, re-render
+        renderRecipes(allRecipes, getCurrentMood());
+      });
+  });
+}
+
+
 // =====================
 // 🌐 Fetch Data
 // =====================
@@ -13,9 +47,18 @@ fetch('recipes.json')
   .then(response => response.json())
   .then(data => {
     allRecipes = data.meals;
+
+    // set mood dropdown to auto
     document.getElementById("userMood").value = "auto";
+
+    // 🌤️ fetch mood from weather
+    fetchWeatherMood();
+
+    // ✅ render recipes & recent after data is available
     renderRecipes(allRecipes, getCurrentMood());
+    renderRecentRecipes();
   });
+
 
 
 // =====================
@@ -79,6 +122,12 @@ function getCurrentMood() {
 function renderRecipes(recipes, mood = "neutral") {
   const grid = document.getElementById("recipe-grid");
   grid.innerHTML = "";
+
+  // 🌤️ Combine weather with mood
+if (weatherMood === "rainy") mood = "sad";
+else if (weatherMood === "hot") mood = "lazy";
+else if (weatherMood === "cold") mood = "tired";
+
 
   const moodFiltered = recipes.filter(recipe => {
     switch (mood) {
@@ -242,6 +291,16 @@ function showRecipeDetails(recipe) {
 
     <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}" class="img-fluid rounded detail-img mb-3">
 
+    <!-- Favorite & Completed Buttons -->
+  <div class="d-flex gap-2 my-3">
+    <button class="btn btn-outline-danger" id="detail-fav-btn">
+      <i class="bi bi-heart"></i> Favorite
+    </button>
+    <button class="btn btn-outline-success" id="detail-done-btn">
+      <i class="bi bi-check2-circle"></i> Completed
+    </button>
+  </div>
+
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="detailTabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -268,6 +327,57 @@ function showRecipeDetails(recipe) {
     🐾 Feed This to Your Pet
   </button> 
   `
+
+  setTimeout(() => {
+  const favBtn = document.getElementById("detail-fav-btn");
+  const doneBtn = document.getElementById("detail-done-btn");
+
+  let favs = JSON.parse(localStorage.getItem("favoriteRecipes") || "[]");
+  let done = JSON.parse(localStorage.getItem("completedRecipes") || "[]");
+
+  // Initial state
+  if (favs.includes(recipe.idMeal)) {
+    favBtn.classList.add("active");
+    favBtn.querySelector("i").classList.replace("bi-heart", "bi-heart-fill");
+  }
+  if (done.includes(recipe.idMeal)) {
+    doneBtn.classList.add("active");
+  }
+
+  favBtn.addEventListener("click", () => {
+    if (favs.includes(recipe.idMeal)) {
+      favs = favs.filter(id => id !== recipe.idMeal);
+      favBtn.classList.remove("active");
+      favBtn.querySelector("i").classList.replace("bi-heart-fill", "bi-heart");
+    } else {
+      favs.push(recipe.idMeal);
+      favBtn.classList.add("active");
+      favBtn.querySelector("i").classList.replace("bi-heart", "bi-heart-fill");
+    }
+    localStorage.setItem("favoriteRecipes", JSON.stringify(favs));
+
+    const mission = JSON.parse(localStorage.getItem("missionProgress") || "{}");
+    mission.dailyFav = Math.min(favs.length, 2);
+    localStorage.setItem("missionProgress", JSON.stringify(mission));
+  });
+
+  doneBtn.addEventListener("click", () => {
+    if (done.includes(recipe.idMeal)) {
+      done = done.filter(id => id !== recipe.idMeal);
+      doneBtn.classList.remove("active");
+    } else {
+      done.push(recipe.idMeal);
+      doneBtn.classList.add("active");
+
+      const mission = JSON.parse(localStorage.getItem("missionProgress") || "{}");
+      mission.dailyTry = Math.min((mission.dailyTry || 0) + 1, 3);
+      mission.weeklyCook = Math.min((mission.weeklyCook || 0) + 1, 5);
+      localStorage.setItem("missionProgress", JSON.stringify(mission));
+    }
+    localStorage.setItem("completedRecipes", JSON.stringify(done));
+  });
+}, 0);
+
   setTimeout(() => {
   const feedBtn = document.getElementById("feed-pet-btn");
   if (feedBtn) {
@@ -291,6 +401,14 @@ function showRecipeDetails(recipe) {
   });
 
 }, 0);
+
+// Store recently viewed recipes (max 5)
+let recent = JSON.parse(localStorage.getItem("recentRecipes") || "[]");
+recent = recent.filter(id => id !== recipe.idMeal); // Remove if already exists
+recent.unshift(recipe.idMeal); // Add to front
+recent = recent.slice(0, 5); // Limit to 5
+localStorage.setItem("recentRecipes", JSON.stringify(recent));
+renderRecentRecipes();
 
 
   panel.classList.add("show");
@@ -502,7 +620,6 @@ document.getElementById("userMood").addEventListener("change", () => {
 });
 
 
-
 // =====================
 // 🎯 Mission Panel Toggle
 // =====================
@@ -606,6 +723,62 @@ function closeMissionPanel() {
   missionPanel.style.transform = "translateX(100%)";
   missionOverlay.style.display = "none";
 }
+
+document.getElementById("randomRecipeBtn").addEventListener("click", () => {
+  if (allRecipes.length === 0) return;
+
+  const randomIndex = Math.floor(Math.random() * allRecipes.length);
+  const randomRecipe = allRecipes[randomIndex];
+  showRecipeDetails(randomRecipe); // Reuse existing detail panel function
+});
+
+document.getElementById("weather-banner").textContent =
+  `🌦️ Current Weather Detected: ${weatherMood.charAt(0).toUpperCase() + weatherMood.slice(1)}`;
+
+function renderRecentRecipes() {
+  const container = document.getElementById("recent-recipes");
+  if (!container || !allRecipes.length) return;
+
+  const recent = JSON.parse(localStorage.getItem("recentRecipes") || "[]");
+  container.innerHTML = "";
+
+  recent.forEach(id => {
+    const recipe = allRecipes.find(r => r.idMeal === id);
+    if (!recipe) return;
+
+    const { emoji, colorClass } = getStyleForRecipe(recipe);
+
+    const btn = document.createElement("button");
+    btn.className = `btn btn-sm d-flex align-items-center gap-2 ${colorClass}`;
+    btn.innerHTML = `<span>${recipe.strMeal}</span> <span>${emoji}</span>`;
+
+    btn.addEventListener("click", () => {
+      showRecipeDetails(recipe);
+    });
+
+    container.appendChild(btn);
+  });
+}
+
+
+function getStyleForRecipe(recipe) {
+  const name = recipe.strMeal.toLowerCase();
+  const category = (recipe.strCategory || "").toLowerCase();
+
+  if (name.includes("cake") || category.includes("dessert")) return { emoji: "🍰", colorClass: "btn-outline-pink" };
+  if (name.includes("noodle") || name.includes("ramen") || category.includes("pasta")) return { emoji: "🍜", colorClass: "btn-outline-primary" };
+  if (name.includes("chicken")) return { emoji: "🍗", colorClass: "btn-outline-warning" };
+  if (name.includes("beef")) return { emoji: "🥩", colorClass: "btn-outline-danger" };
+  if (name.includes("salad")) return { emoji: "🥗", colorClass: "btn-outline-success" };
+  if (name.includes("rice")) return { emoji: "🍚", colorClass: "btn-outline-secondary" };
+  if (name.includes("bread") || category.includes("bread")) return { emoji: "🍞", colorClass: "btn-outline-brown" };
+  if (name.includes("soup")) return { emoji: "🥣", colorClass: "btn-outline-info" };
+  if (category.includes("seafood")) return { emoji: "🦐", colorClass: "btn-outline-teal" };
+  if (category.includes("vegan") || category.includes("vegetarian")) return { emoji: "🌱", colorClass: "btn-outline-success" };
+
+  return { emoji: "🍽️", colorClass: "btn-outline-dark" };
+}
+
 
 
 

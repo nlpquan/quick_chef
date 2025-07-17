@@ -41,16 +41,14 @@
   
     </div>
   
-    <!-- Tag Filters (Left, below the title) -->
-    <div class="container mt-4">
-      <div class="d-flex flex-wrap gap-2 justify-content-start">
-        <button class="btn btn-outline-secondary btn-sm">🥗 Cold Soba Noodles</button>
-        <button class="btn btn-outline-secondary btn-sm">🍊 Orange Pound Cake</button>
-        <button class="btn btn-outline-secondary btn-sm">🍗 Grilled Peach Salad</button>
-        <!-- Add more buttons as needed -->
-      </div>
-    </div>
+    <!-- Recently Viewed (Left, below the title) -->
+<div class="container mt-4">
+  <h6>Recently Viewed</h6>
+  <div id="recent-recipes" class="d-flex flex-wrap gap-2 justify-content-start"></div>
+</div>
+
   </nav>
+  
 
   <div class="container text-center my-4">
   <div class="row justify-content-center">
@@ -67,6 +65,11 @@
     </div>
   </div>
 
+  <br>
+  <button id="randomRecipeBtn" class="btn btn-warning ms-2">🎲 Surprise Me</button>
+
+
+
   <div class="row justify-content-center mt-3">
     <div class="col-auto">
       <div class="btn-group" role="group" id="my-recipes-tabs">
@@ -80,7 +83,9 @@
 </div>
 
 
-
+<div id="weather-banner" class="text-center text-muted fs-5 mt-1">
+  <i class="bi bi-cloud-sun"></i> Detecting your local weather...
+</div>
   
   <div class="container py-4">
     <!-- Recipes Grid -->
